@@ -1,22 +1,64 @@
 const defaultWorks = [
-  { id: 'work-1', title: '돌이킬 수 없는 앨리스', category: 'painting', series: '궁전으로 갈 수도 있어', art: 'art-a', media: [] },
-  { id: 'work-2', title: '안락한 번데기', category: 'painting', series: '궁전으로 갈 수도 있어', art: 'art-b', media: [] },
-  { id: 'work-3', title: '궁전을 찾아 날아서', category: 'painting', series: '궁전으로 갈 수도 있어', art: 'art-c', media: [] },
-  { id: 'work-4', title: '거울 속 내 모습', category: 'painting', series: '궁전으로 갈 수도 있어', art: 'art-d', media: [] },
-  { id: 'work-5', title: '이불 아지트', category: 'painting', series: '궁전으로 갈 수도 있어', art: 'art-e', media: [] },
+  { id: 'work-1', title: '돌이킬 수 없는 앨리스', category: 'painting', year: '2026', series: '궁전으로 갈 수도 있어', art: 'art-a', imageUrl: './alice-kim-junhee.jpg', media: [] },
+  { id: 'work-2', title: '안락한 번데기', category: 'painting', year: '2026', series: '궁전으로 갈 수도 있어', art: 'art-b', imageUrl: './cozy-chrysalis-kim-junhee.jpg', media: [] },
+  { id: 'work-3', title: '궁전을 찾아 날아서', category: 'painting', year: '2026', series: '궁전으로 갈 수도 있어', art: 'art-c', imageUrl: './flying-to-the-palace-kim-junhui.jpg', media: [] },
+  { id: 'work-4', title: '거울 속 내 모습', category: 'painting', year: '2026', series: '궁전으로 갈 수도 있어', art: 'art-d', imageUrl: './my-reflection-kim-junhui.jpg', media: [] },
+  { id: 'work-5', title: '이불 아지트 1', category: 'painting', year: '2026', series: '이불 아지트', art: 'art-e', imageUrl: './blanket-hideout-1-kim-junhee.jpg', media: [] },
+  { id: 'work-6', title: '이불 아지트 2', category: 'painting', year: '2026', series: '이불 아지트', art: 'art-e', imageUrl: './blanket-hideout-2-kim-junhee.jpg', media: [] },
+  { id: 'work-7', title: '이불 아지트 3', category: 'painting', year: '2026', series: '이불 아지트', art: 'art-e', imageUrl: './blanket-hideout-3-kim-junhee.jpg', media: [] },
+  { id: 'work-8', title: '소원 Candy 탑', category: 'painting', year: '2026', series: '정물', art: 'art-a', imageUrl: './wish-candy-tower-kim-junhui.jpg', media: [] },
+  { id: 'work-9', title: '푸른 Medicine을 선택해', category: 'painting', year: '2026', series: '정물', art: 'art-b', imageUrl: './choose-blue-medicine-kim-junhui.jpg', media: [] },
+  { id: 'work-10', title: '옷장 너머의 나니아', category: 'painting', year: '2026', series: '이불', art: 'art-c', imageUrl: './narnia-beyond-the-wardrobe-kim-junhui.jpg', media: [] },
+  { id: 'work-11', title: '이불 아지트 4', category: 'painting', year: '2026', series: '이불 아지트', art: 'art-e', imageUrl: './blanket-hideout-4-kim-junhui.jpg', media: [] },
 ];
+const deckArtworkSizes = {
+  'work-1': '80.3 × 116.7 cm', 'work-2': '130.3 × 97.0 cm',
+  'work-3': '80.3 × 100.0 cm', 'work-4': '91.0 × 72.7 cm',
+  'work-5': '50.0 × 72.7 cm', 'work-6': '50.0 × 72.7 cm',
+  'work-7': '50.0 × 72.7 cm', 'work-8': '53.0 × 45.5 cm',
+  'work-9': '53.0 × 45.5 cm', 'work-10': '45.5 × 53.0 cm',
+  'work-11': '50.0 × 72.7 cm',
+};
+const artworkDisplayOrder = ['work-1', 'work-2', 'work-3', 'work-4', 'work-5', 'work-6', 'work-7', 'work-11', 'work-8', 'work-9', 'work-10'];
+for (const work of defaultWorks) {
+  work.order = artworkDisplayOrder.indexOf(work.id) + 1;
+  work.material = 'Oil on Canvas';
+  work.size = deckArtworkSizes[work.id];
+  if (work.id === 'work-3') work.title = '궁전을 찾아 날아';
+  work.caption = `${work.title}, ${work.year}, ${work.material}, ${work.size}`;
+}
+const artistNotes = {
+  'work-1': '몸은 장난감 집에 비해 터무니없이 커서 무릎이 가슴팍까지 올라와 비좁고 불편해 보인다. 하지만 동시에 작은 장난감 집에 들어간 사실에서 오는 묘한 포근함과 뻔뻔함이 섞여 있다.',
+  'work-2': '많은 천에 감싸져 비좁아 보이는 공간에 있지만 오히려 이곳에 있는 것을 원한다. 압박되어 있지만 오히려 편안하다. 성인을 나비로 보고 그전의 상태를 번데기로 본다. 이 공간은 현실 세계와 단절되고 싶어 하는 나의 의지이자 번데기 안이다. 성인이자 나비인 나는 바깥세상이 아닌 번데기 안에서 머무르며 나오지 않는다.',
+  'work-3': '닿지 않으며 더 이상 존재하지 않는 어린 시절인 궁전으로 가고 싶어 하는 작품이다. 꿈꾸며 공상하는 것처럼 표현하기 위해 구름 속에서 날고 있으며 번데기 안에서 나가 날개를 펼쳐 훨훨 날아 성을 찾아다닌다.',
+  'work-4': '소녀의 화장대에서 거울을 보며 실제로 보이는 자신의 모습은 곰돌이 인형이다. 자기 자신을 한 성인이 아닌 아이로 스스로 여기고 있으며, 그것을 어린아이들이 가지고 다니는 곰돌이 인형으로 자신의 얼굴을 받아들이는 그림이다.',
+};
+const blanketArtistNote = '아이의 이불 아지트로 보이는 작은 공간에서 요새를 짓고 나오지 않는 모습을 표현한다. 사적인 공간이 아닌 공공의 공간이나 회사, 도보 등 타인들이 섞여 나 자신에게 영향을 끼칠 수 있는 곳에서 아이의 아지트가 이질적이게 놓여있다.';
+artistNotes['work-8'] = '소원을 비는 탑을 만들 때 돌이 아닌 소녀의 사탕으로 대신 소원 돌탑을 만든다. 달콤한 냄새가 날 것 같은 소원 candy 탑을 보며 소녀는 궁전으로 가고 싶은 소원을 빌 것이다.';
+artistNotes['work-9'] = '현실과 이상을 선택하는 순간이다. 이상적인 자신의 세계를 위해 푸른 약을 선택한 소녀는 푸른 약 또는 사탕들을 손 안에 골라내어 궁전을 향하기 위한 준비를 한다.';
+artistNotes['work-10'] = '옷장 너머의 환상의 나니아 세계로 도망치고 싶어하는 그림이다. 옷장 너머로 나비가 들어오며 소녀가 세계에 홀린 듯이 눈을 반짝이고 있다. 그림에선 나니아 세계를 다 보여주지 않으며 보는 사람마다 각각의 유토피아를 상상해볼 수 있는 그림이다. 나니아를 보고 있는 것은 그림 속의 소녀이지만 분명 관람객은 자신만의 나니아 세계가 눈 너머에 보여지고 있을 것이다.';
+for (const id of ['work-5', 'work-6', 'work-7', 'work-11']) artistNotes[id] = blanketArtistNote;
+for (const work of defaultWorks) work.note = artistNotes[work.id] || '';
+
+defaultWorks.push({
+  id: 'work-12', title: '궁전으로 갈 수도 있어.', category: 'animation', year: '2026',
+  material: 'Video animation', size: '1280 × 720 , 30s', series: '애니메이션', order: 12,
+  imageUrl: './palace-animation-poster.png', media: ['./palace-animation.mp4'],
+  caption: '2026\nVideo animation\n1280 × 720 , 30s',
+  note: '캔버스끼리 이어지는 작가의 확장된 세계를 보여주고자 한다.',
+});
 const defaultProfile = {
   bio: '저는 김준희입니다. 어른으로 살아가며 마주하는 책임과 사회의 시선, 그 안에서 여전히 장난치고 꿈꾸는 아이의 마음을 회화로 풀어냅니다.',
-  education: '학력 및 졸업 시점 확인 후 기재',
+  education: '대구가톨릭대학교 미술대학 인터미디어아트과 졸업',
   exhibitions: [{ year: '2026', name: '농카데미아 아트페어' }, { year: '2025', name: '아트쇼제주2025' }],
-  email: '', instagram: '', musicUrl: '',
+  email: 'kws020322@naver.com', instagram: 'https://www.instagram.com/junhuiart/', musicUrl: '',
 };
 const categories = { painting: '회화', digital: '디지털 그림', character: '캐릭터 드로잉', study: '습작', goods: '굿즈', animation: '애니메이션' };
 const storageKey = 'junhee-portfolio-content-v1';
 const $ = s => document.querySelector(s);
 const $$ = s => [...document.querySelectorAll(s)];
 const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const safeUrl = value => { try { const url = new URL(String(value || '')); return ['http:', 'https:'].includes(url.protocol) ? url.href : ''; } catch { return ''; } };
+const safeUrl = value => { try { const url = new URL(String(value || ''), document.baseURI); if (!value) return ''; return ['http:', 'https:'].includes(url.protocol) ? url.href : ''; } catch { return ''; } };
 
 let works = defaultWorks.map(work => ({ ...work }));
 let profile = { ...defaultProfile, exhibitions: defaultProfile.exhibitions.map(item => ({ ...item })) };
@@ -33,19 +75,51 @@ try {
   if (saved && Array.isArray(saved.works)) {
     works = saved.works.map((work, i) => ({ ...defaultWorks[i % defaultWorks.length], ...work, id: String(work.id || `work-${i + 1}`), media: Array.isArray(work.media) ? work.media : [] }));
   }
-  if (saved?.profile) profile = { ...defaultProfile, ...saved.profile, exhibitions: Array.isArray(saved.profile.exhibitions) ? saved.profile.exhibitions : defaultProfile.exhibitions };
+  if (saved?.profile) profile = { ...defaultProfile, ...saved.profile, email: saved.profile.email || defaultProfile.email, instagram: saved.profile.instagram || defaultProfile.instagram, exhibitions: Array.isArray(saved.profile.exhibitions) ? saved.profile.exhibitions : defaultProfile.exhibitions };
 } catch { /* Ignore damaged local drafts; the supplied portfolio content stays available. */ }
+
+if (!profile.education || profile.education === '학력 및 졸업 시점 확인 후 기재') profile.education = defaultProfile.education;
+// Supply the published artwork for older drafts that still contain a placeholder.
+works = works.map(work => defaultWorks.some(item => item.id === work.id) ? { ...work, year: '2026' } : work);
+works = works.map(work => {
+  if (work.id === 'work-5' && work.title === '이불 아지트' && !work.imageUrl && !(work.media || []).length) {
+    return { ...work, ...defaultWorks.find(item => item.id === 'work-5') };
+  }
+  const published = defaultWorks.find(item => item.id === work.id && item.title === work.title);
+  return !work.imageUrl && published?.imageUrl ? { ...work, imageUrl: published.imageUrl } : work;
+});
+for (const published of defaultWorks.filter(work => ['work-6', 'work-7', 'work-8', 'work-9', 'work-10', 'work-11', 'work-12'].includes(work.id))) {
+  if (!works.some(work => work.id === published.id || work.title === published.title)) works.push({ ...published });
+}
+
+works = works.map(work => {
+  const published = defaultWorks.find(item => item.id === work.id);
+  if (!published) return work;
+  return { ...work, material: published.material, size: published.size, order: published.order,
+    caption: !work.caption || work.caption === '작품 캡션 준비 중' ? published.caption : work.caption,
+    ...(work.id === 'work-3' && work.title === '궁전을 찾아 날아서' ? { title: published.title, imageUrl: work.imageUrl || published.imageUrl } : {}) };
+});
+
+// Fill notes in existing browser drafts as well as the default artwork list.
+works = works.map(work => artistNotes[work.id] && (!work.note || work.note === '작가 노트 준비 중')
+  ? { ...work, note: artistNotes[work.id] }
+  : work);
 
 function saveLocal() {
   try { localStorage.setItem(storageKey, JSON.stringify({ works, profile })); return true; }
   catch { alert('브라우저 저장 공간이 부족해요. 콘텐츠 JSON으로 백업해주세요.'); return false; }
 }
 
-function workMedia(work) { return [work.imageUrl, ...(work.media || [])].map(safeUrl).filter(Boolean); }
+function workMedia(work) { return (work.category === 'animation' && work.media?.length ? work.media : [work.imageUrl, ...(work.media || [])]).map(safeUrl).filter(Boolean); }
 
 function cardMedia(work) {
   const url = safeUrl(work.imageUrl);
-  if (url) return `<span class="work-image"><img class="cover" src="${esc(url)}" alt="${esc(work.title)}" loading="lazy"><span class="art-label">${work.media?.length ? 'IMAGE + MEDIA' : 'ARTWORK'}</span></span>`;
+  const original = defaultWorks.find(item => item.id === work.id);
+  const localOriginal = original && safeUrl(original.imageUrl) === url && /^\.\/.+\.jpg$/.test(original.imageUrl);
+  const responsive = localOriginal
+    ? ` srcset="${[400,800,1200].map(width => `${esc(safeUrl(original.imageUrl.replace(/\.jpg$/, `-preview-${width}.jpg`)))} ${width}w`).join(', ')}" sizes="(max-width:760px) 44vw, (max-width:1380px) 29vw, 400px"`
+    : '';
+  if (url) return `<span class="work-image artwork-photo"><img class="cover" src="${esc(url)}"${responsive} alt="${esc(work.title)}" loading="lazy" decoding="async">${work.category === 'animation' ? '<span class="video-play-badge" aria-hidden="true">▶ VIDEO · 30s</span>' : ''}<span class="art-label">${work.media?.length ? 'IMAGE + MEDIA' : 'ARTWORK'}</span></span>`;
   const art = /^art-[a-e]$/.test(work.art) ? work.art : 'art-a';
   return `<span class="work-image ${art}" role="img" aria-label="${esc(work.title)} 이미지 미리보기"><span class="art-label">이미지 준비 중 · 미리보기</span></span>`;
 }
@@ -67,7 +141,7 @@ function renderProfile() {
   $('.exhibitions').innerHTML = '<h3>Selected exhibitions</h3>' + profile.exhibitions.map(item => `<p><span>${esc(item.year)}</span> ${esc(item.name)}</p>`).join('');
   const contact = $$('.contact-row b');
   if (contact[0]) contact[0].innerHTML = profile.email ? `<a href="mailto:${esc(profile.email)}">${esc(profile.email)}</a>` : '공개 주소 준비 중';
-  if (contact[1]) contact[1].innerHTML = safeUrl(profile.instagram) ? `<a href="${esc(safeUrl(profile.instagram))}" target="_blank" rel="noreferrer">Instagram ↗</a>` : '공개 계정 준비 중';
+  if (contact[1]) contact[1].innerHTML = safeUrl(profile.instagram) ? `<a href="${esc(safeUrl(profile.instagram))}" target="_blank" rel="noreferrer">${esc(profile.instagram.replace(/\/$/, '').split('/').pop().replace(/^/, '@'))} ↗</a>` : '공개 계정 준비 중';
   const firstImage = works.find(work => safeUrl(work.imageUrl));
   const hero = $('#hero-art');
   if (firstImage) { hero.style.backgroundImage = `url("${safeUrl(firstImage.imageUrl)}")`; hero.style.backgroundSize = 'cover'; hero.style.backgroundPosition = 'center'; }
@@ -93,7 +167,7 @@ function renderDetailMedia() {
   const url = sources[currentMedia];
   const video = /\.(mp4|webm|ogg)(?:[?#]|$)/i.test(url);
   stage.innerHTML = video
-    ? `<video class="media-item" src="${esc(url)}" controls playsinline preload="metadata" aria-label="${esc(currentWork.title)} 작품 영상"></video>`
+    ? `<video class="media-item" src="${esc(url)}" poster="${esc(safeUrl(currentWork.imageUrl))}" controls playsinline preload="metadata" aria-label="${esc(currentWork.title)} 작품 영상"></video>`
     : `<img class="media-item" src="${esc(url)}" alt="${esc(currentWork.title)} 작품 이미지 ${currentMedia + 1}" decoding="async">`;
   nav.hidden = sources.length < 2;
   dialog.querySelector('.media-count').textContent = `${currentMedia + 1} / ${sources.length}`;
@@ -116,8 +190,7 @@ grid.addEventListener('click', event => {
   currentMedia = 0;
   dialog.querySelector('.detail-index').textContent = `${categories[currentWork.category] || '작품'}　/　${currentWork.series || 'Selected works'}`;
   dialog.querySelector('h2').textContent = currentWork.title || '제목 미정';
-  dialog.querySelector('.detail-meta').textContent = [currentWork.year || '연도 확인 중', currentWork.material || '재료 확인 중', currentWork.size || '크기 확인 중'].join('　·　');
-  dialog.querySelector('.detail-caption').textContent = currentWork.caption || '작품 캡션 준비 중';
+  dialog.querySelector('.detail-caption').textContent = currentWork.caption || [currentWork.title, currentWork.year, currentWork.material, currentWork.size].filter(Boolean).join(', ');
   dialog.querySelector('.detail-copy').textContent = currentWork.note || '작가 노트 준비 중';
   renderDetailMedia();
   dialog.showModal();
@@ -128,6 +201,7 @@ dialog.querySelectorAll('[data-media-step]').forEach(button => button.addEventLi
   if (count > 1) { currentMedia = (currentMedia + Number(button.dataset.mediaStep) + count) % count; renderDetailMedia(); }
 }));
 dialog.querySelector('.close').addEventListener('click', () => dialog.close());
+dialog.addEventListener('close', () => dialog.querySelectorAll('video').forEach(video => video.pause()));
 dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
 
 const zoom = $('.zoom-dialog');
@@ -281,4 +355,8 @@ const observer = new IntersectionObserver(entries => entries.forEach(entry => {
   if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
 }), { threshold: .12 });
 document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
+
+
+
+
 

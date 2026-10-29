@@ -122,3 +122,4 @@ $('#download').addEventListener('click',()=>{download('junhee-portfolio.tokens.j
 $('#import-button').addEventListener('click',()=>$('#import-file').click());$('#import-file').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{commit(importTokenData(JSON.parse(await file.text())),'토큰을 가져왔어요.');}catch(error){toast(error.message);}event.target.value='';});
 function toast(message){$('#toast').textContent=message;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),3500);}
 apply();render();
+
