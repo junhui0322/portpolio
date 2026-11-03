@@ -144,8 +144,24 @@ function renderProfile() {
   if (contact[1]) contact[1].innerHTML = safeUrl(profile.instagram) ? `<a href="${esc(safeUrl(profile.instagram))}" target="_blank" rel="noreferrer">${esc(profile.instagram.replace(/\/$/, '').split('/').pop().replace(/^/, '@'))} ↗</a>` : '공개 계정 준비 중';
   const firstImage = works.find(work => safeUrl(work.imageUrl));
   const hero = $('#hero-art');
-  if (firstImage) { hero.style.backgroundImage = `url("${safeUrl(firstImage.imageUrl)}")`; hero.style.backgroundSize = 'cover'; hero.style.backgroundPosition = 'center'; }
-  else hero.style.backgroundImage = '';
+  hero.style.backgroundImage = 'none';
+  if (firstImage) {
+    const picture = document.createElement('img');
+    picture.className = 'hero-original';
+    picture.src = safeUrl(firstImage.imageUrl);
+    picture.alt = firstImage.title;
+    picture.decoding = 'async';
+    picture.fetchPriority = 'high';
+    const caption = document.createElement('div');
+    caption.className = 'hero-art-caption';
+    const title = document.createElement('span');
+    title.textContent = firstImage.title;
+    const year = document.createElement('span');
+    year.textContent = firstImage.year || '';
+    caption.append(title, year);
+    hero.replaceChildren(picture, caption);
+    hero.setAttribute('aria-label', firstImage.title);
+  } else hero.replaceChildren();
   const musicUrl = safeUrl(profile.musicUrl);
   if (musicUrl) audio.src = musicUrl; else audio.removeAttribute('src');
   const musicButton = $('#music-button');
