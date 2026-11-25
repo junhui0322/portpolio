@@ -1,0 +1,54 @@
+@font-face{font-family:CoverScript;src:url('./pinyon-script.ttf') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:CoverSerif;src:url('./cormorant-garamond-light.ttf') format('truetype');font-style:normal;font-weight:300;font-display:swap}
+.portfolio-cover{position:relative;isolation:isolate;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;min-height:100svh;overflow:hidden;padding:34px 5vw 26px;background:#fff7fb;color:#93647f;scroll-margin-top:0}
+.portfolio-cover::before{content:"";position:absolute;pointer-events:none;z-index:-2;inset:-8%;background:radial-gradient(ellipse 280px 190px at 97% 8%,#e4a0bd66,transparent 75%),radial-gradient(ellipse 240px 160px at 3% 94%,#e4a0bd6b,transparent 75%);filter:blur(21px)}
+.portfolio-cover::after{content:"";position:absolute;pointer-events:none;inset:15px;border:1px solid #dec1d155;z-index:-1}
+.cover-topline{display:flex;align-items:center;justify-content:space-between;gap:20px;font:9px/1.5 var(--sans);letter-spacing:.22em;color:#a48098}
+.cover-topline span:last-child{letter-spacing:.12em}
+.cover-center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:45px 0 65px;text-align:center;width:100%;flex:1}
+.cover-kicker{margin:0 0 19px;font:300 clamp(18px,2.7vw,30px)/1.2 CoverSerif,Georgia,serif;letter-spacing:.2em;text-transform:uppercase;color:#ad829d}
+.portfolio-cover .cover-title{position:relative;margin:0 0 12px;padding:0 .12em .12em;font:400 clamp(100px,22vw,290px)/1.02 CoverScript,'Brush Script MT',cursive;letter-spacing:-.035em;color:#fbecf4;-webkit-text-stroke:.85px #b97797;transform:rotate(-4deg)}
+.cover-title::after{content:"";position:absolute;left:12%;right:7%;bottom:.08em;height:1px;background:#c998af6b;transform:rotate(4deg)}
+.cover-byline{display:flex;align-items:baseline;justify-content:center;gap:17px;margin:3px 0 0;color:#9f6e8c}
+.cover-byline>span{font:300 24px/1.4 CoverSerif,Georgia,serif;font-style:italic}
+.cover-byline strong{font:400 clamp(31px,4.5vw,54px)/1.4 CoverScript,cursive;letter-spacing:.01em;color:#89607f}
+.cover-subtitle{margin:15px 0 0;font:9px/1.6 var(--sans);letter-spacing:.25em;color:#a5869a}
+.cover-flower{position:absolute;width:32px;height:32px;left:calc(50% - min(38vw,480px));top:28%;color:#c08aa5;transform:rotate(-10deg);pointer-events:none}
+.cover-flower path{stroke:currentColor;stroke-width:.8;fill:none;stroke-linejoin:round}
+.cover-bottomline{display:flex;align-items:center;gap:22px;min-height:50px;color:#9e7e94}
+.cover-year{font:300 19px/1 CoverSerif,Georgia,serif;letter-spacing:.03em}
+.cover-rule{height:1px;flex:1;background:#d8bdce}
+.cover-enter{display:inline-flex;gap:15px;align-items:center;text-decoration:none;color:#956580;font:9px/1.4 var(--sans);letter-spacing:.15em;white-space:nowrap;padding:8px 0 8px 4px;min-height:44px}
+.cover-enter>span:last-child{display:grid;place-items:center;width:34px;height:34px;border:1px solid #d9bace;border-radius:50%;font-size:18px;line-height:1;letter-spacing:0;transition:background .18s,border-color .18s}
+.cover-enter:hover>span:last-child{background:#f4dfeaff;border-color:#bf8ca8}.cover-enter:focus-visible{outline:2px solid #a87593;outline-offset:6px;border-radius:4px}
+@media(min-width:1600px){.portfolio-cover{padding-left:8vw;padding-right:8vw}}
+@media(max-width:760px){.portfolio-cover{padding:29px 7vw 23px;min-height:100svh}.portfolio-cover::after{inset:10px}.cover-topline{font-size:7px;letter-spacing:.15em}.cover-topline span:last-child{font-size:7px}.cover-center{padding:50px 0 60px}.cover-kicker{font-size:19px;letter-spacing:.16em;margin-bottom:23px}.portfolio-cover .cover-title{font-size:clamp(87px,23vw,174px);padding-left:0;padding-right:.05em;-webkit-text-stroke:.65px #b97797;line-height:1.1;margin-bottom:15px}.cover-byline{gap:12px;margin-top:5px}.cover-byline>span{font-size:19px}.cover-byline strong{font-size:37px}.cover-subtitle{font-size:7px;letter-spacing:.17em;margin-top:12px}.cover-bottomline{gap:15px}.cover-year{font-size:17px}.cover-enter{font-size:7px;gap:10px}.cover-enter>span:last-child{width:32px;height:32px;font-size:16px}.cover-flower{left:5%;top:27%;width:23px;height:23px}}
+@media(max-height:520px) and (min-width:761px){.portfolio-cover{min-height:620px}.portfolio-cover .cover-title{font-size:170px}.cover-center{padding:40px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.cover-enter>span:last-child{transition:none}}
+/* Continuous cover and first screen, with a persistent site header. */
+body>header{position:fixed;top:0;left:0;right:0;width:100%;z-index:50;border-bottom:0;background:#fff8fbef}
+.portfolio-cover{min-height:100svh;padding-top:105px;padding-bottom:42px;background:#fff8fb}
+.portfolio-cover::after,.cover-title::after{content:none;display:none}
+.portfolio-cover::before{background:radial-gradient(ellipse 280px 190px at 97% 8%,#e4a0bd66,transparent 75%);filter:blur(21px)}
+.cover-topline,.cover-bottomline,.cover-subtitle{display:none}
+.cover-center{padding:35px 0;min-height:calc(100svh - 147px)}
+@media(max-width:760px){.portfolio-cover{padding-top:95px;padding-bottom:30px}.cover-center{min-height:calc(100svh - 125px);padding:28px 0}}
+
+/* Keep the large script title as native, scalable text without rotated compositing. */
+.portfolio-cover .cover-title{
+  transform:none;
+  font-synthesis:none;
+  text-rendering:geometricPrecision;
+  -webkit-text-stroke-width:clamp(.85px,.07vw,1.15px);
+  -webkit-text-stroke-color:#d6adc3;
+  text-shadow:none;
+  filter:none;
+}
+.cover-byline{color:#bf9caf}.cover-byline strong{color:#b28fa7}
+
+.cover-motion-pending #cover-title{visibility:hidden}
+@media(prefers-reduced-motion:reduce){.cover-motion-pending #cover-title{visibility:visible}}
+
+/* Font outlines remain vector-sharp; a separate pen path reveals each stroke. */
+.portfolio-cover .cover-title{width:3.11em;height:1.14em;max-width:100%;padding:0;margin-bottom:12px;line-height:1}
+.handwriting-title{display:block;width:2.869em;height:auto;max-width:100%;margin:0 auto;overflow:visible}

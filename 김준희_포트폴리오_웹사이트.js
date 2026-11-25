@@ -42,15 +42,25 @@ for (const work of defaultWorks) work.note = artistNotes[work.id] || '';
 
 defaultWorks.push({
   id: 'work-12', title: '궁전으로 갈 수도 있어.', category: 'animation', year: '2026',
-  material: 'Video animation', size: '1280 × 720 , 30s', series: '애니메이션', order: 12,
-  imageUrl: './palace-animation-poster.png', media: ['./palace-animation.mp4'],
-  caption: '2026\nVideo animation\n1280 × 720 , 30s',
+  material: 'Video animation', size: '1280 × 718, 57s', series: '애니메이션', order: 12,
+  imageUrl: './palace-animation-57s-poster.jpg', media: ['./palace-animation-57s.mp4'],
+  caption: '2026\nVideo animation\n1280 × 718, 57s',
   note: '캔버스끼리 이어지는 작가의 확장된 세계를 보여주고자 한다.',
+});
+defaultWorks.push({
+  id: 'work-13', title: '스티커', category: 'goods', year: '2026',
+  material: '스티커', series: '굿즈', order: 13,
+  imageUrl: './alice-stickers-kim-junhui.jpg', media: [],
+  caption: '스티커, 2026',
+  note: '앨리스와 나비, 새장, 사탕병 등의 이미지를 담은 스티커입니다.',
 });
 const defaultProfile = {
   bio: '저는 김준희입니다. 어른으로 살아가며 마주하는 책임과 사회의 시선, 그 안에서 여전히 장난치고 꿈꾸는 아이의 마음을 회화로 풀어냅니다.',
   education: '대구가톨릭대학교 미술대학 인터미디어아트과 졸업',
-  exhibitions: [{ year: '2026', name: '농카데미아 아트페어' }, { year: '2025', name: '아트쇼제주2025' }],
+  exhibitions: [
+    { year: '2026', name: '농카데미아 아트페어, 경기도서관, 수원' },
+    { year: '2025', name: '아트쇼제주2025, 호텔브릿지 서귀포, 제주' },
+  ],
   email: 'kws020322@naver.com', instagram: 'https://www.instagram.com/junhuiart/', musicUrl: '',
 };
 const categories = { painting: '회화', digital: '디지털 그림', character: '캐릭터 드로잉', study: '습작', goods: '굿즈', animation: '애니메이션' };
@@ -67,11 +77,21 @@ let currentWork = null;
 let currentMedia = 0;
 const grid = $('#work-grid');
 const dialog = $('.detail-dialog');
-const manager = $('.manage-dialog');
+const localArtistPage = location.protocol === 'http:' &&
+  location.hostname === '127.0.0.1' && location.pathname === '/artist-local.html';
+const manageButton = $('#manage-open');
+const manageDialog = $('.manage-dialog');
+const manager = localArtistPage ? manageDialog : null;
+if (manager && manageButton) {
+  manageButton.hidden = false;
+} else {
+  manageButton?.remove();
+  manageDialog?.remove();
+}
 const audio = $('#background-audio');
 
 try {
-  const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+  const saved = manager ? JSON.parse(localStorage.getItem(storageKey) || 'null') : null;
   if (saved && Array.isArray(saved.works)) {
     works = saved.works.map((work, i) => ({ ...defaultWorks[i % defaultWorks.length], ...work, id: String(work.id || `work-${i + 1}`), media: Array.isArray(work.media) ? work.media : [] }));
   }
@@ -79,6 +99,12 @@ try {
 } catch { /* Ignore damaged local drafts; the supplied portfolio content stays available. */ }
 
 if (!profile.education || profile.education === '학력 및 졸업 시점 확인 후 기재') profile.education = defaultProfile.education;
+// Add venues to previously saved default entries while preserving edited entries.
+profile.exhibitions = profile.exhibitions.map(item => {
+  const updated = defaultProfile.exhibitions.find(entry =>
+    entry.year === item?.year && entry.name.split(',')[0] === item?.name);
+  return updated ? { ...item, name: updated.name } : item;
+});
 // Supply the published artwork for older drafts that still contain a placeholder.
 works = works.map(work => defaultWorks.some(item => item.id === work.id) ? { ...work, year: '2026' } : work);
 works = works.map(work => {
@@ -88,13 +114,16 @@ works = works.map(work => {
   const published = defaultWorks.find(item => item.id === work.id && item.title === work.title);
   return !work.imageUrl && published?.imageUrl ? { ...work, imageUrl: published.imageUrl } : work;
 });
-for (const published of defaultWorks.filter(work => ['work-6', 'work-7', 'work-8', 'work-9', 'work-10', 'work-11', 'work-12'].includes(work.id))) {
+for (const published of defaultWorks.filter(work => ['work-6', 'work-7', 'work-8', 'work-9', 'work-10', 'work-11', 'work-12', 'work-13'].includes(work.id))) {
   if (!works.some(work => work.id === published.id || work.title === published.title)) works.push({ ...published });
 }
 
 works = works.map(work => {
   const published = defaultWorks.find(item => item.id === work.id);
   if (!published) return work;
+  if (work.id === 'work-12' && (!work.media.length || work.media.some(url => /(?:^|\/)palace-animation\.mp4(?:[?#]|$)/i.test(url)))) {
+    return { ...work, size: published.size, caption: published.caption, imageUrl: published.imageUrl, media: [...published.media] };
+  }
   return { ...work, material: published.material, size: published.size, order: published.order,
     caption: !work.caption || work.caption === '작품 캡션 준비 중' ? published.caption : work.caption,
     ...(work.id === 'work-3' && work.title === '궁전을 찾아 날아서' ? { title: published.title, imageUrl: work.imageUrl || published.imageUrl } : {}) };
@@ -106,6 +135,7 @@ works = works.map(work => artistNotes[work.id] && (!work.note || work.note === '
   : work);
 
 function saveLocal() {
+  if (!manager) return false;
   try { localStorage.setItem(storageKey, JSON.stringify({ works, profile })); return true; }
   catch { alert('브라우저 저장 공간이 부족해요. 콘텐츠 JSON으로 백업해주세요.'); return false; }
 }
@@ -115,11 +145,12 @@ function workMedia(work) { return (work.category === 'animation' && work.media?.
 function cardMedia(work) {
   const url = safeUrl(work.imageUrl);
   const original = defaultWorks.find(item => item.id === work.id);
-  const localOriginal = original && safeUrl(original.imageUrl) === url && /^\.\/.+\.jpg$/.test(original.imageUrl);
+  const localOriginal = original && original.category !== 'animation' && safeUrl(original.imageUrl) === url && /^\.\/.+\.jpg$/.test(original.imageUrl);
   const responsive = localOriginal
     ? ` srcset="${[400,800,1200].map(width => `${esc(safeUrl(original.imageUrl.replace(/\.jpg$/, `-preview-${width}.jpg`)))} ${width}w`).join(', ')}" sizes="(max-width:760px) 44vw, (max-width:1380px) 29vw, 400px"`
     : '';
-  if (url) return `<span class="work-image artwork-photo"><img class="cover" src="${esc(url)}"${responsive} alt="${esc(work.title)}" loading="lazy" decoding="async">${work.category === 'animation' ? '<span class="video-play-badge" aria-hidden="true">▶ VIDEO · 30s</span>' : ''}<span class="art-label">${work.media?.length ? 'IMAGE + MEDIA' : 'ARTWORK'}</span></span>`;
+  const duration = String(work.size ?? '').match(/\b\d+s\b/)?.[0];
+  if (url) return `<span class="work-image artwork-photo"><img class="cover" src="${esc(url)}"${responsive} alt="${esc(work.title)}" loading="lazy" decoding="async">${work.category === 'animation' ? `<span class="video-play-badge" aria-hidden="true">▶ VIDEO${duration ? ` · ${duration}` : ''}</span>` : ''}<span class="art-label">${work.media?.length ? 'IMAGE + MEDIA' : 'ARTWORK'}</span></span>`;
   const art = /^art-[a-e]$/.test(work.art) ? work.art : 'art-a';
   return `<span class="work-image ${art}" role="img" aria-label="${esc(work.title)} 이미지 미리보기"><span class="art-label">이미지 준비 중 · 미리보기</span></span>`;
 }
@@ -142,14 +173,13 @@ function renderProfile() {
   const contact = $$('.contact-row b');
   if (contact[0]) contact[0].innerHTML = profile.email ? `<a href="mailto:${esc(profile.email)}">${esc(profile.email)}</a>` : '공개 주소 준비 중';
   if (contact[1]) contact[1].innerHTML = safeUrl(profile.instagram) ? `<a href="${esc(safeUrl(profile.instagram))}" target="_blank" rel="noreferrer">${esc(profile.instagram.replace(/\/$/, '').split('/').pop().replace(/^/, '@'))} ↗</a>` : '공개 계정 준비 중';
-  const firstImage = works.find(work => safeUrl(work.imageUrl));
-  const hero = $('#hero-art');
-  if (firstImage) { hero.style.backgroundImage = `url("${safeUrl(firstImage.imageUrl)}")`; hero.style.backgroundSize = 'cover'; hero.style.backgroundPosition = 'center'; }
-  else hero.style.backgroundImage = '';
   const musicUrl = safeUrl(profile.musicUrl);
   if (musicUrl) audio.src = musicUrl; else audio.removeAttribute('src');
   const musicButton = $('#music-button');
-  if (musicButton) musicButton.textContent = musicUrl ? '♫ 배경음악 재생' : '♫ 배경음악 선택';
+  if (musicButton) {
+    musicButton.hidden = !musicUrl && !manager;
+    musicButton.textContent = musicUrl ? '♫ 배경음악 재생' : '♫ 배경음악 선택';
+  }
 }
 
 function renderDetailMedia() {
@@ -245,99 +275,104 @@ function renderManageList() {
   $('#manage-list').innerHTML = works.map((work, index) => `<button class="manage-item" type="button" data-manage-work="${index}"><span>${esc(work.title || '제목 미정')}</span><small>${esc(categories[work.category] || '분류 미정')}</small></button>`).join('');
 }
 
-$('#manage-open').addEventListener('click', () => {
-  renderManageList();
-  $('#bio-input').value = profile.bio;
-  $('#education-input').value = profile.education;
-  $('#exhibition-input').value = profile.exhibitions.map(item => `${item.year} | ${item.name}`).join('\n');
-  $('#email-input').value = profile.email;
-  $('#instagram-input').value = profile.instagram;
-  $('#music-url-input').value = profile.musicUrl;
-  manager.showModal();
-});
-$('.manage-close').addEventListener('click', () => manager.close());
-manager.addEventListener('click', event => { if (event.target === manager) manager.close(); });
-$('#manage-list').addEventListener('click', event => {
-  const button = event.target.closest('[data-manage-work]');
-  if (button) fillWorkForm(Number(button.dataset.manageWork));
-});
+function bindArtistEditor() {
+  $('#manage-open').addEventListener('click', () => {
+    renderManageList();
+    $('#bio-input').value = profile.bio;
+    $('#education-input').value = profile.education;
+    $('#exhibition-input').value = profile.exhibitions.map(item => `${item.year} | ${item.name}`).join('\n');
+    $('#email-input').value = profile.email;
+    $('#instagram-input').value = profile.instagram;
+    $('#music-url-input').value = profile.musicUrl;
+    manager.showModal();
+  });
+  $('.manage-close').addEventListener('click', () => manager.close());
+  manager.addEventListener('click', event => { if (event.target === manager) manager.close(); });
+  $('#manage-list').addEventListener('click', event => {
+    const button = event.target.closest('[data-manage-work]');
+    if (button) fillWorkForm(Number(button.dataset.manageWork));
+  });
 
-$('#new-work').addEventListener('click', () => {
-  selectedWork = -1;
-  $('#work-title-input').value = '';
-  $('#work-category-input').value = 'painting';
-  $('#work-year-input').value = '';
-  $('#work-material-input').value = '';
-  $('#work-size-input').value = '';
-  $('#work-order-input').value = works.length + 1;
-  $('#work-image-input').value = '';
-  $('#work-media-input').value = '';
-  $('#work-caption-input').value = '';
-  $('#work-note-input').value = '';
-  $('#work-title-input').focus();
-});
+  $('#new-work').addEventListener('click', () => {
+    selectedWork = -1;
+    $('#work-title-input').value = '';
+    $('#work-category-input').value = 'painting';
+    $('#work-year-input').value = '';
+    $('#work-material-input').value = '';
+    $('#work-size-input').value = '';
+    $('#work-order-input').value = works.length + 1;
+    $('#work-image-input').value = '';
+    $('#work-media-input').value = '';
+    $('#work-caption-input').value = '';
+    $('#work-note-input').value = '';
+    $('#work-title-input').focus();
+  });
 
-$('#save-work').addEventListener('click', () => {
-  const title = $('#work-title-input').value.trim();
-  if (!title) { alert('작품명을 입력해주세요.'); return; }
-  const imageUrl = $('#work-image-input').value.trim();
-  const media = $('#work-media-input').value.split(/\r?\n/).map(value => value.trim()).filter(Boolean);
-  if ((imageUrl && !safeUrl(imageUrl)) || media.some(value => !safeUrl(value))) { alert('이미지와 영상 주소는 HTTPS 또는 HTTP URL로 입력해주세요.'); return; }
-  const old = selectedWork >= 0 ? works[selectedWork] : null;
-  const next = {
-    ...(old || {}), id: old?.id || `work-${Date.now()}`, title, category: $('#work-category-input').value,
-    series: old?.series || 'Selected works', year: $('#work-year-input').value.trim(),
-    material: $('#work-material-input').value.trim(), size: $('#work-size-input').value.trim(),
-    order: Number($('#work-order-input').value) || works.length + 1, imageUrl, media,
-    caption: $('#work-caption-input').value.trim(), note: $('#work-note-input').value.trim(),
-    art: old?.art || `art-${String.fromCharCode(97 + (works.length % 5))}`,
-  };
-  if (selectedWork < 0) { works.push(next); selectedWork = works.length - 1; }
-  else works[selectedWork] = next;
-  saveLocal(); render(); renderProfile(); fillWorkForm(selectedWork);
-});
+  $('#save-work').addEventListener('click', () => {
+    const title = $('#work-title-input').value.trim();
+    if (!title) { alert('작품명을 입력해주세요.'); return; }
+    const imageUrl = $('#work-image-input').value.trim();
+    const media = $('#work-media-input').value.split(/\r?\n/).map(value => value.trim()).filter(Boolean);
+    if ((imageUrl && !safeUrl(imageUrl)) || media.some(value => !safeUrl(value))) { alert('이미지와 영상 주소는 HTTPS 또는 HTTP URL로 입력해주세요.'); return; }
+    const old = selectedWork >= 0 ? works[selectedWork] : null;
+    const next = {
+      ...(old || {}), id: old?.id || `work-${Date.now()}`, title, category: $('#work-category-input').value,
+      series: old?.series || 'Selected works', year: $('#work-year-input').value.trim(),
+      material: $('#work-material-input').value.trim(), size: $('#work-size-input').value.trim(),
+      order: Number($('#work-order-input').value) || works.length + 1, imageUrl, media,
+      caption: $('#work-caption-input').value.trim(), note: $('#work-note-input').value.trim(),
+      art: old?.art || `art-${String.fromCharCode(97 + (works.length % 5))}`,
+    };
+    if (selectedWork < 0) { works.push(next); selectedWork = works.length - 1; }
+    else works[selectedWork] = next;
+    saveLocal(); render(); renderProfile(); fillWorkForm(selectedWork);
+  });
 
-$('#delete-work').addEventListener('click', () => {
-  if (selectedWork < 0) return;
-  if (!confirm('이 작품 정보를 목록에서 삭제할까요? 삭제 전에 콘텐츠 JSON을 백업할 수 있습니다.')) return;
-  works.splice(selectedWork, 1); selectedWork = -1; saveLocal(); render(); renderManageList();
-  ['work-title-input', 'work-year-input', 'work-material-input', 'work-size-input', 'work-image-input', 'work-media-input', 'work-caption-input', 'work-note-input'].forEach(id => { $(`#${id}`).value = ''; });
-});
+  $('#delete-work').addEventListener('click', () => {
+    if (selectedWork < 0) return;
+    if (!confirm('이 작품 정보를 목록에서 삭제할까요? 삭제 전에 콘텐츠 JSON을 백업할 수 있습니다.')) return;
+    works.splice(selectedWork, 1); selectedWork = -1; saveLocal(); render(); renderManageList();
+    ['work-title-input', 'work-year-input', 'work-material-input', 'work-size-input', 'work-image-input', 'work-media-input', 'work-caption-input', 'work-note-input'].forEach(id => { $(`#${id}`).value = ''; });
+  });
 
-$('#save-profile').addEventListener('click', () => {
-  const email = $('#email-input').value.trim();
-  const instagram = $('#instagram-input').value.trim();
-  const musicUrl = $('#music-url-input').value.trim();
-  if ((instagram && !safeUrl(instagram)) || (musicUrl && !safeUrl(musicUrl))) { alert('SNS와 음원 주소는 HTTPS 또는 HTTP URL로 입력해주세요.'); return; }
-  profile = {
-    bio: $('#bio-input').value.trim(), education: $('#education-input').value.trim(),
-    exhibitions: $('#exhibition-input').value.split(/\r?\n/).map(line => { const [year, ...name] = line.split('|'); return { year: year.trim(), name: name.join('|').trim() }; }).filter(item => item.year || item.name),
-    email, instagram, musicUrl,
-  };
-  saveLocal(); renderProfile();
-});
+  $('#save-profile').addEventListener('click', () => {
+    const email = $('#email-input').value.trim();
+    const instagram = $('#instagram-input').value.trim();
+    const musicUrl = $('#music-url-input').value.trim();
+    if ((instagram && !safeUrl(instagram)) || (musicUrl && !safeUrl(musicUrl))) { alert('SNS와 음원 주소는 HTTPS 또는 HTTP URL로 입력해주세요.'); return; }
+    profile = {
+      bio: $('#bio-input').value.trim(), education: $('#education-input').value.trim(),
+      exhibitions: $('#exhibition-input').value.split(/\r?\n/).map(line => { const [year, ...name] = line.split('|'); return { year: year.trim(), name: name.join('|').trim() }; }).filter(item => item.year || item.name),
+      email, instagram, musicUrl,
+    };
+    saveLocal(); renderProfile();
+  });
 
-function downloadJson(name, data) {
-  const link = document.createElement('a');
-  const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
-  link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  function downloadJson(name, data) {
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  $('#export-content').addEventListener('click', () => downloadJson('junhee-portfolio-content.json', { works, profile }));
+  $('#import-content-file').addEventListener('change', async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (!Array.isArray(data.works) || !data.profile) throw new Error('invalid shape');
+      works = data.works.map((work, index) => ({ ...defaultWorks[index % defaultWorks.length], ...work, id: String(work.id || `work-${index + 1}`), media: Array.isArray(work.media) ? work.media : [] }));
+      profile = { ...defaultProfile, ...data.profile, exhibitions: Array.isArray(data.profile.exhibitions) ? data.profile.exhibitions : [] };
+      saveLocal(); render(); renderProfile(); $('#manage-open').click();
+    } catch { alert('포트폴리오 콘텐츠 백업 JSON 형식이 올바르지 않습니다.'); }
+    finally { event.target.value = ''; }
+  });
 }
-$('#export-content').addEventListener('click', () => downloadJson('junhee-portfolio-content.json', { works, profile }));
-$('#import-content-file').addEventListener('change', async event => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  try {
-    const data = JSON.parse(await file.text());
-    if (!Array.isArray(data.works) || !data.profile) throw new Error('invalid shape');
-    works = data.works.map((work, index) => ({ ...defaultWorks[index % defaultWorks.length], ...work, id: String(work.id || `work-${index + 1}`), media: Array.isArray(work.media) ? work.media : [] }));
-    profile = { ...defaultProfile, ...data.profile, exhibitions: Array.isArray(data.profile.exhibitions) ? data.profile.exhibitions : [] };
-    saveLocal(); render(); renderProfile(); $('#manage-open').click();
-  } catch { alert('포트폴리오 콘텐츠 백업 JSON 형식이 올바르지 않습니다.'); }
-  finally { event.target.value = ''; }
-});
+
+if (manager) bindArtistEditor();
 
 $('#music-button').addEventListener('click', async () => {
   if (!safeUrl(profile.musicUrl)) {
+    if (!manager) return;
     manager.showModal(); $('#music-url-input').focus();
     alert('작가 관리에서 공개 가능한 음원 URL을 먼저 입력해주세요. 음악은 직접 재생을 눌렀을 때만 시작합니다.');
     return;
@@ -355,8 +390,3 @@ const observer = new IntersectionObserver(entries => entries.forEach(entry => {
   if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
 }), { threshold: .12 });
 document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
-
-
-
-
-

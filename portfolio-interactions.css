@@ -1,0 +1,5 @@
+html.gsap-motion .reveal{opacity:1;transform:none;transition:none}
+html.gsap-motion .work-image{transition:box-shadow .35s}
+html.gsap-motion .work-card:hover .work-image{transform:none}
+.work-title>span:last-child{display:inline-block}
+@media(prefers-reduced-motion:reduce){.work-card:hover .work-image,.button:hover{transform:none}}
